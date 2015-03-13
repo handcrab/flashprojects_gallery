@@ -44,6 +44,59 @@ jQuery ->
     #   else
     #     return _getYears items
 
+
+  # VIEWS
+  # =====
+  # --- Item View
+  # a(href="https://flash_url.swf" type="application/x-shockwave-flash" data-description="flash") 
+  #   img(src="image_preview_url.jpg")
+  class GalleryItemView extends Backbone.View
+    tagName: 'a'
+    attributes: ->
+      # rel: 'gallery'
+      title: "#{ @model.get 'author' }@#{ @model.get 'date' }: #{ @model.get 'description' }"
+      href: "#{ @model.get 'href' }"
+      type: "application/x-shockwave-flash" if @model.get('href').match(/swf$/i)
+      'data-description': "#{ @model.get 'author' }@#{ @model.get 'date' }: #{ @model.get 'description' }"
+    
+    initialize: ->
+      #_.bindAll @, 'change', 'remove'
+
+      # model events
+      # on model.change - update view
+      # @model.bind 'change', @render, @
+      # @model.bind 'remove', @unrender
+
+    render: ->
+      $(@el).html """
+        <img class='preview' src='#{ @model.get 'preview' }'>
+      """
+      @
+
+  # --- Collection View
+  class GalleryView extends Backbone.View
+    el: $ '#gallery'
+
+    initialize: ->
+      @collection = new Gallery
+      # @collection.bind 'add', @appendItem
+      # @collection.bind 'sync', @render, @
+      # @collection.fetch()
+      @render()
+
+    render: ->
+      # for item in @collection.models
+      @collection.fetch
+        success: (items) =>
+          # $(@el).find('.loading').hide()
+          # $(@el).find('.content').empty()
+
+          for item in items.models
+            item_view = new GalleryItemView model: item
+            # $(@el).find('ul').append item_view.render().el
+            $(@el).find('.content').append item_view.render().el
+
   window.Gallery = Gallery
   window.GalleryItem = GalleryItem
-  # window.GalleryView = GalleryView
+  window.GalleryView = GalleryView
+  pfolio = new GalleryView
