@@ -25,7 +25,7 @@ jQuery ->
     model: GalleryItem
     url: 'https://dl.dropboxusercontent.com/u/31230733/swfs/files.json'
 
-    initialize: -> @fetch()
+    # initialize: -> @fetch()
 
     # HELPERS
     # -------
@@ -90,45 +90,43 @@ jQuery ->
           # $(@el).find('.loading').hide()
           $(@el).find('.content').empty()
           $(@el).find('.content').css background: 'none' # disable spinner
-          for item in items.models
-            item_view = new GalleryItemView model: item
-            # $(@el).find('ul').append item_view.render().el
-            $(@el).find('.content').append item_view.render().el
-        @
+          @renderItems items.models
+        # @
+
+    clearContent: -> $(@el).find('.content').empty()
+
+    renderItems: (items) ->
+      if items.target # is event
+        @clearContent()
+        items = @collection.models
+      for item in items
+        item_view = new GalleryItemView model: item
+        $(@el).find('.content').append item_view.render().el
 
     showByYears: ->
-      $content = $(@el).find('.content')
-      $content.empty()
+      $content = @clearContent()
 
-      years = @collection.getYears()
-      for year in years
+      for year in @collection.getYears()
         $content.append """
           <h2>Год: #{year}</h2>
         """
         itemsByYear = @collection.where dateYear: year
-        for item in itemsByYear
-          item_view = new GalleryItemView model: item
-          $content.append item_view.render().el
+        @renderItems itemsByYear
     
     showBySubjects: ->
-      $content = $(@el).find('.content')
-      $content.empty()
+      $content = @clearContent()
 
-      subjects = @collection.getSubjects()
-      console.log subjects
-      for subject in subjects
+      for subject in @collection.getSubjects()
         $content.append """
           <h2>Тема: #{subject}</h2>
         """
         itemsBySubject = @collection.where subject: subject
-        for item in itemsBySubject
-          item_view = new GalleryItemView model: item
-          $content.append item_view.render().el
+        @renderItems itemsBySubject
 
     events:
       'click .show-by-years': 'showByYears'
       'click .show-by-subjects': 'showBySubjects'
-      'click .show-all': 'render'
+      'click .show-all': 'renderItems'
 
   window.Gallery = Gallery
   window.GalleryItem = GalleryItem
