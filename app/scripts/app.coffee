@@ -174,3 +174,8 @@ jQuery ->
         slide
     links = $(@).parent().find('a')
     blueimp.Gallery links, options
+
+  # menu
+  $('nav a').click (e) ->
+    $('nav a').removeClass 'active button-primary' # clear
+    $(@).addClass 'active button-primary'

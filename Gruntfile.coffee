@@ -47,6 +47,13 @@ module.exports = (grunt) ->
           src: '**'
           dest: "#{BUILD_PATH}/img/"
         ]
+      vendorcss:
+        files: [
+          expand: true
+          cwd: "#{APP_PATH}/stylesheets/vendor"
+          src: '**'
+          dest: "#{BUILD_PATH}/css/vendor"
+        ]
 
     watch:
       options:
@@ -79,4 +86,4 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'default', ['watch']
   grunt.registerTask 'build',
-    ['coffee:compile', 'sass', 'jade:compile', 'copy:img']
+    ['coffee:compile', 'sass', 'jade:compile', 'copy']

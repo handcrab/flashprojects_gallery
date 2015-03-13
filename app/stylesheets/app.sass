@@ -1,6 +1,6 @@
 .preview
-  width: 150px
-  height: 150px
+  width: 100px
+  height: 100px
 
 // Gallety
 .blueimp-gallery > .description
@@ -14,6 +14,7 @@
 .blueimp-gallery-controls > .description
   display: block
 
+// flash obj
 .application-content
   position: relative
   height: 80% !important
@@ -30,8 +31,42 @@
     margin-right: -50%
     transform: translate(-50%, -50%)
 
-.content
-  min-height: 64px
-  min-width: 64px
-  background: url(../img/loading.gif) center no-repeat
-  background-size: 64px 64px
+header
+  $icon-size: 5rem //1.2*5
+  margin: 5rem 2em auto auto
+  // text-align: center
+
+  .flash-logo
+    background: url(../img/adobe_flash.png) center no-repeat
+    background-size: $icon-size $icon-size
+    width: $icon-size
+    height: $icon-size
+    display: inline-block
+    margin-right: $icon-size/2
+    margin-bottom: -(($icon-size * 1.2) - $icon-size)/2
+    // background-position: 0 -$icon-size/2
+
+#gallery
+  nav ul
+    li
+      display: inline-block
+
+  .content
+    min-height: 64px
+    min-width: 64px
+    background: url(../img/loading.gif) center no-repeat
+    background-size: 64px 64px
+
+// sticky footer
+html, body
+  height: 100%
+body
+  display: table
+  width: 100%
+
+  .main
+    display: table-row
+    height: 1px
+
+  .main-expanded
+    height: 100%
