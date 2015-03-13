@@ -39,6 +39,15 @@ module.exports = (grunt) ->
           ext: '.css'
         ]
 
+    copy:
+      img:
+        files: [
+          expand: true
+          cwd: "#{APP_PATH}/images/"
+          src: '**'
+          dest: "#{BUILD_PATH}/img/"
+        ]
+
     watch:
       options:
         livereload: true
@@ -66,6 +75,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-jade'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-sass'
+  grunt.loadNpmTasks 'grunt-contrib-copy'
 
   grunt.registerTask 'default', ['watch']
-  grunt.registerTask 'compile', ['coffee:compile', 'sass', 'jade:compile']
+  grunt.registerTask 'build',
+    ['coffee:compile', 'sass', 'jade:compile', 'copy:img']

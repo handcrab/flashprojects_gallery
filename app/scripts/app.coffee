@@ -90,7 +90,7 @@ jQuery ->
         success: (items) =>
           # $(@el).find('.loading').hide()
           # $(@el).find('.content').empty()
-
+          $(@el).find('.content').css background: 'none' # disable spinner
           for item in items.models
             item_view = new GalleryItemView model: item
             # $(@el).find('ul').append item_view.render().el
