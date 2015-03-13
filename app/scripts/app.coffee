@@ -15,9 +15,10 @@ jQuery ->
       dateRegexp = /(\d{2}).(\d{2}).(\d{4})/i
       date = @get('date').toString()
       date.match( dateRegexp )[3]
-    # get: (attr) ->
-    #   return @[attr]() if (typeof @[attr] == 'function')
-    #   super attr
+
+    get: (attr) ->
+      return @[attr]() if (typeof @[attr] == 'function')
+      super attr
 
   # -- Collection
   class Gallery extends Backbone.Collection
@@ -30,7 +31,11 @@ jQuery ->
     # -------
     # list of the projects' dates
     getYears: (items=@models) ->
-      _((item.dateYear() for item in items)).uniq()
+      # .filter (e) -> not _.isEmpty e
+      _((item.dateYear() for item in items))
+        .uniq()
+        .filter (e) -> not _.isEmpty e
+        .sort()
 
     # list of the projects' subjects
     getSubjects: (items=@models) ->
@@ -43,7 +48,6 @@ jQuery ->
     #         return _getYears items
     #   else
     #     return _getYears items
-
 
   # VIEWS
   # =====
@@ -103,23 +107,11 @@ jQuery ->
 
   # ---------------
   # blueImp gallery
-  # flash
+  # flash obj
   blueimp.Gallery::applicationFactory = (obj, callback) ->
     $element = $('<div>')
       .addClass('application-content')
       # .attr('title', obj.title)
-    # $('#mainNav').append($element).flash obj.href
-    # $element.flash
-    #   id: 'flash-obj'
-    #   swf: obj.href
-    #   width: '100%'
-    #   height: '100%' #400
-    #   valign: "top"
-    #   # scale: 'exactFit' # "noScale"
-    #   # scale: "noScale"
-    #   allowFullScreen: true
-    #   # wmode: 'transparent'
-    #   # align: 'middle'
 
     $.get obj.href
       .done (result) ->
@@ -129,6 +121,7 @@ jQuery ->
           width: '100%'
           height: '100%'
           valign: "top"
+          # scale: 'exactFit'
           allowFullScreen: true
         callback
           type: 'load'
@@ -139,23 +132,17 @@ jQuery ->
           target: $element[0]
     return $element[0]
 
-  $('#gallery').click (e) ->
-    event = e or window.event
-    target = event.target or event.srcElement
-    link = if target.src then target.parentNode else target
-
+  $(document).on 'click', '#gallery a', (e) ->
     options =
-      index: link
-      event: event
+      index: @
+      event: e
       # enableKeyboardNavigation: false
       # fullScreen: true
       onslide: (index, slide) ->
-        text = @list[index].getAttribute 'data-description'
+        text = $(@list[index]).data('description')
         node = @container.find '.description'
         node.empty()
-        # node[0].appendChild(document.createTextNode(text)) if text
         $(node).append text
         slide
-    links = $(@).find('a') # @getElementsByTagName('a')
-
+    links = $(@).parent().find('a')
     blueimp.Gallery links, options
