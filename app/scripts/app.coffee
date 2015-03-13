@@ -100,3 +100,47 @@ jQuery ->
   window.GalleryItem = GalleryItem
   window.GalleryView = GalleryView
   pfolio = new GalleryView
+
+  # ---------------
+  # blueImp gallery
+  # flash
+  blueimp.Gallery::applicationFactory = (obj, callback) ->
+    $element = $('<div>')
+      .addClass('application-content')
+      .attr('title', obj.title)
+    # $('#mainNav').append($element).flash obj.href
+    $element.flash
+      id: 'flash-obj'
+      swf: obj.href
+      width: '100%'
+      height: '100%' #400
+      valign: "top"
+      # scale: 'exactFit' # "noScale"
+      # scale: "noScale"
+      allowFullScreen: true
+      # wmode: 'transparent'
+      # align: 'middle'
+
+    @setTimeout callback, [{
+      type: 'load'
+      target: $element[0]
+    }]
+    return $element[0]
+
+  $('#gallery').click (e) ->
+    event = e or window.event
+    target = event.target or event.srcElement
+
+    link = if target.src then target.parentNode else target
+    options =
+      index: link
+      event: event
+      onslide: (index, slide) -> 
+        text = @list[index].getAttribute('data-description')
+        node = @container.find('.description')
+        node.empty()
+        # node[0].appendChild(document.createTextNode(text)) if text
+        $(node).append text
+    links = $(@).find('a') # @getElementsByTagName('a')
+
+    blueimp.Gallery links, options
