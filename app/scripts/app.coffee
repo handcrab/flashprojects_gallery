@@ -54,7 +54,7 @@ jQuery ->
     tagName: 'a'
     attributes: ->
       # rel: 'gallery'
-      title: "#{ @model.get 'author' }@#{ @model.get 'date' }: #{ @model.get 'description' }"
+      # title: "#{ @model.get 'author' }@#{ @model.get 'date' }: #{ @model.get 'description' }"
       href: "#{ @model.get 'href' }"
       type: "application/x-shockwave-flash" if @model.get('href').match(/swf$/i)
       'data-description': "#{ @model.get 'author' }@#{ @model.get 'date' }: #{ @model.get 'description' }"
@@ -107,40 +107,55 @@ jQuery ->
   blueimp.Gallery::applicationFactory = (obj, callback) ->
     $element = $('<div>')
       .addClass('application-content')
-      .attr('title', obj.title)
+      # .attr('title', obj.title)
     # $('#mainNav').append($element).flash obj.href
-    $element.flash
-      id: 'flash-obj'
-      swf: obj.href
-      width: '100%'
-      height: '100%' #400
-      valign: "top"
-      # scale: 'exactFit' # "noScale"
-      # scale: "noScale"
-      allowFullScreen: true
-      # wmode: 'transparent'
-      # align: 'middle'
+    # $element.flash
+    #   id: 'flash-obj'
+    #   swf: obj.href
+    #   width: '100%'
+    #   height: '100%' #400
+    #   valign: "top"
+    #   # scale: 'exactFit' # "noScale"
+    #   # scale: "noScale"
+    #   allowFullScreen: true
+    #   # wmode: 'transparent'
+    #   # align: 'middle'
 
-    @setTimeout callback, [{
-      type: 'load'
-      target: $element[0]
-    }]
+    $.get obj.href
+      .done (result) ->
+        $element.flash
+          # id: 'flash-obj'
+          swf: obj.href
+          width: '100%'
+          height: '100%'
+          valign: "top"
+          allowFullScreen: true
+        callback
+          type: 'load'
+          target: $element[0]
+      .fail ->
+        callback
+          type: 'error'
+          target: $element[0]
     return $element[0]
 
   $('#gallery').click (e) ->
     event = e or window.event
     target = event.target or event.srcElement
-
     link = if target.src then target.parentNode else target
+
     options =
       index: link
       event: event
-      onslide: (index, slide) -> 
-        text = @list[index].getAttribute('data-description')
-        node = @container.find('.description')
+      # enableKeyboardNavigation: false
+      # fullScreen: true
+      onslide: (index, slide) ->
+        text = @list[index].getAttribute 'data-description'
+        node = @container.find '.description'
         node.empty()
         # node[0].appendChild(document.createTextNode(text)) if text
         $(node).append text
+        slide
     links = $(@).find('a') # @getElementsByTagName('a')
 
     blueimp.Gallery links, options
