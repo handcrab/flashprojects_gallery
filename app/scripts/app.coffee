@@ -32,15 +32,17 @@ jQuery ->
     # list of the projects' dates
     getYears: (items=@models) ->
       # .filter (e) -> not _.isEmpty e
-      _((item.dateYear() for item in items))
+      _((item.get('dateYear') for item in items))
         .uniq()
         .filter (e) -> not _.isEmpty e
         .sort()
 
     # list of the projects' subjects
     getSubjects: (items=@models) ->
-      _((item.dateYear() for item in items)).uniq()
-
+      _((item.get('subject') for item in items))
+        .uniq()
+        # .filter (e) -> not _.isEmpty e
+        .sort()
     # getYears: ->
     #   if @models.length is 0
     #     @fetch 
@@ -56,20 +58,15 @@ jQuery ->
   #   img(src="image_preview_url.jpg")
   class GalleryItemView extends Backbone.View
     tagName: 'a'
+    className: 'gallery-item'
     attributes: ->
       # rel: 'gallery'
       # title: "#{ @model.get 'author' }@#{ @model.get 'date' }: #{ @model.get 'description' }"
       href: "#{ @model.get 'href' }"
       type: "application/x-shockwave-flash" if @model.get('href').match(/swf$/i)
       'data-description': "#{ @model.get 'author' }@#{ @model.get 'date' }: #{ @model.get 'description' }"
-    
-    initialize: ->
-      #_.bindAll @, 'change', 'remove'
 
-      # model events
-      # on model.change - update view
-      # @model.bind 'change', @render, @
-      # @model.bind 'remove', @unrender
+    # initialize: ->
 
     render: ->
       $(@el).html """
@@ -83,8 +80,6 @@ jQuery ->
 
     initialize: ->
       @collection = new Gallery
-      # @collection.bind 'add', @appendItem
-      # @collection.bind 'sync', @render, @
       # @collection.fetch()
       @render()
 
@@ -93,12 +88,47 @@ jQuery ->
       @collection.fetch
         success: (items) =>
           # $(@el).find('.loading').hide()
-          # $(@el).find('.content').empty()
+          $(@el).find('.content').empty()
           $(@el).find('.content').css background: 'none' # disable spinner
           for item in items.models
             item_view = new GalleryItemView model: item
             # $(@el).find('ul').append item_view.render().el
             $(@el).find('.content').append item_view.render().el
+        @
+
+    showByYears: ->
+      $content = $(@el).find('.content')
+      $content.empty()
+
+      years = @collection.getYears()
+      for year in years
+        $content.append """
+          <h2>Год: #{year}</h2>
+        """
+        itemsByYear = @collection.where dateYear: year
+        for item in itemsByYear
+          item_view = new GalleryItemView model: item
+          $content.append item_view.render().el
+    
+    showBySubjects: ->
+      $content = $(@el).find('.content')
+      $content.empty()
+
+      subjects = @collection.getSubjects()
+      console.log subjects
+      for subject in subjects
+        $content.append """
+          <h2>Тема: #{subject}</h2>
+        """
+        itemsBySubject = @collection.where subject: subject
+        for item in itemsBySubject
+          item_view = new GalleryItemView model: item
+          $content.append item_view.render().el
+
+    events:
+      'click .show-by-years': 'showByYears'
+      'click .show-by-subjects': 'showBySubjects'
+      'click .show-all': 'render'
 
   window.Gallery = Gallery
   window.GalleryItem = GalleryItem
@@ -132,7 +162,7 @@ jQuery ->
           target: $element[0]
     return $element[0]
 
-  $(document).on 'click', '#gallery a', (e) ->
+  $(document).on 'click', '#gallery a.gallery-item', (e) ->
     options =
       index: @
       event: e

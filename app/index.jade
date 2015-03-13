@@ -17,7 +17,7 @@ block content
   #gallery
     nav
       ul
-        li.show-by-years по годам
-        li.show-by-subjects по темам
-        li.show-all.active все
+        li: a.show-by-years(href='#by_years') по годам
+        li: a.show-by-subjects(href='#by_subjects') по темам
+        li: a.show-all.active(href='#all') все
     .content
