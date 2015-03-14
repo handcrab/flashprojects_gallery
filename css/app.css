@@ -1,0 +1,59 @@
+.preview {
+  width: 100px;
+  height: 100px; }
+
+.blueimp-gallery > .description {
+  position: absolute;
+  top: 30px;
+  left: 15px;
+  color: white;
+  font-size: 24px; }
+
+.blueimp-gallery-controls > .description {
+  display: block; }
+
+.application-content {
+  position: relative;
+  height: 80% !important;
+  width: 50% !important; }
+  .application-content object {
+    height: 100%;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%); }
+
+header {
+  margin: 5rem 2em auto auto; }
+  header .flash-logo {
+    background: url(../img/adobe_flash.png) center no-repeat;
+    background-size: 5rem 5rem;
+    width: 5rem;
+    height: 5rem;
+    display: inline-block;
+    margin-right: 2.5rem;
+    margin-bottom: -0.5rem; }
+
+#gallery nav ul li {
+  display: inline-block; }
+#gallery .content {
+  min-height: 64px;
+  min-width: 64px;
+  background: url(../img/loading.gif) center no-repeat;
+  background-size: 64px 64px; }
+
+html, body {
+  height: 100%; }
+
+body {
+  display: table;
+  width: 100%; }
+  body .main {
+    display: table-row;
+    height: 1px; }
+  body .main-expanded {
+    height: 100%; }
+
+/*# sourceMappingURL=app.css.map */

@@ -1,6 +1,6 @@
 module.exports = (grunt) ->
   # Constants
-  BUILD_PATH = 'build'
+  BUILD_PATH = '.'
   APP_PATH = 'app'
 
   # Project configuration
