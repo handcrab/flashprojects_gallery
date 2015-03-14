@@ -77,13 +77,23 @@ module.exports = (grunt) ->
         options:
           spawn: false
 
+    connect:
+      server:
+        options:
+          port: 9000
+          keepalive: true
+          debug: true
+          livereload: true
+          base: BUILD_PATH # root
+
   # Dependencies
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-jade'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-sass'
   grunt.loadNpmTasks 'grunt-contrib-copy'
+  grunt.loadNpmTasks 'grunt-contrib-connect'
 
   grunt.registerTask 'default', ['watch']
   grunt.registerTask 'build',
-    ['coffee:compile', 'sass', 'jade:compile', 'copy']
+    ['coffee:compile', 'sass', 'jade:compile', 'copy', 'connect']

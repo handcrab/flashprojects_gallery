@@ -1,5 +1,4 @@
 jQuery ->
-
   # MODELS
   # ======
   # -- Item
@@ -27,9 +26,7 @@ jQuery ->
 
     # initialize: -> @fetch()
 
-    # HELPERS
-    # -------
-    # list of the projects' dates
+    # list of the all dates
     getYears: (items=@models) ->
       # .filter (e) -> not _.isEmpty e
       _((item.get('dateYear') for item in items))
@@ -37,19 +34,12 @@ jQuery ->
         .filter (e) -> not _.isEmpty e
         .sort()
 
-    # list of the projects' subjects
+    # list of all subjects
     getSubjects: (items=@models) ->
       _((item.get('subject') for item in items))
         .uniq()
         # .filter (e) -> not _.isEmpty e
         .sort()
-    # getYears: ->
-    #   if @models.length is 0
-    #     @fetch 
-    #       success: (items) =>
-    #         return _getYears items
-    #   else
-    #     return _getYears items
 
   # VIEWS
   # =====
@@ -128,9 +118,6 @@ jQuery ->
       'click .show-by-subjects': 'showBySubjects'
       'click .show-all': 'renderItems'
 
-  window.Gallery = Gallery
-  window.GalleryItem = GalleryItem
-  window.GalleryView = GalleryView
   pfolio = new GalleryView
 
   # ---------------
@@ -170,11 +157,12 @@ jQuery ->
         text = $(@list[index]).data('description')
         node = @container.find '.description'
         node.empty()
-        $(node).append text
+        $(node).append('<h5>').find(':first-child').append text
         slide
     links = $(@).parent().find('a')
     blueimp.Gallery links, options
 
+  # ----
   # menu
   $('nav a').click (e) ->
     $('nav a').removeClass 'active button-primary' # clear
