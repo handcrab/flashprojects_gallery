@@ -204,6 +204,12 @@ jQuery ->
         node = @container.find '.description'
         node.empty()
         $(node).append('<h5>').find(':first-child').append text
+        $(node).append('<div id="vk_like">')
+
+        VK.Widgets.Like "vk_like",
+          type    : 'vertical'
+          pageUrl : window.location.href
+
         slide
     links = $(@).parent().find('a')
     blueimp.Gallery links, options
@@ -213,3 +219,7 @@ jQuery ->
   $('nav a').click (e) ->
     $('nav a').removeClass 'active button-primary' # clear
     $(@).addClass 'active button-primary'
+
+  VK.init
+    apiId: 3568852
+    onlyWidgets: true
