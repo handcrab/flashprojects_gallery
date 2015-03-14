@@ -2,13 +2,19 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
   hasProp = {}.hasOwnProperty;
 
 jQuery(function() {
-  var Gallery, GalleryItem, GalleryItemView, GalleryView, pfolio;
+  var App, Gallery, GalleryItem, GalleryItemView, GalleryView, app;
   GalleryItem = (function(superClass) {
     extend(GalleryItem, superClass);
 
     function GalleryItem() {
       return GalleryItem.__super__.constructor.apply(this, arguments);
     }
+
+    GalleryItem.id_count = 0;
+
+    GalleryItem.prototype.initialize = function() {
+      return this.id = (GalleryItem.id_count += 1);
+    };
 
     GalleryItem.prototype.dateYear = function() {
       var date, dateRegexp;
@@ -90,8 +96,13 @@ jQuery(function() {
       return {
         href: "" + (this.model.get('href')),
         type: this.model.get('href').match(/swf$/i) ? "application/x-shockwave-flash" : void 0,
-        'data-description': (this.model.get('author')) + "@" + (this.model.get('date')) + ": " + (this.model.get('description'))
+        'data-description': this.descriptionStr(),
+        'data-id': this.model.id
       };
+    };
+
+    GalleryItemView.prototype.descriptionStr = function() {
+      return (this.model.get('author')) + "@" + (this.model.get('date')) + ": " + (this.model.get('description'));
     };
 
     GalleryItemView.prototype.render = function() {
@@ -124,7 +135,8 @@ jQuery(function() {
             $(_this.el).find('.content').css({
               background: 'none'
             });
-            return _this.renderItems(items.models);
+            _this.renderItems(items.models);
+            return _this.trigger('render');
           };
         })(this)
       });
@@ -192,7 +204,65 @@ jQuery(function() {
     return GalleryView;
 
   })(Backbone.View);
-  pfolio = new GalleryView;
+  App = (function(superClass) {
+    extend(App, superClass);
+
+    function App() {
+      return App.__super__.constructor.apply(this, arguments);
+    }
+
+    App.prototype.routes = {
+      'by_years': 'by_years',
+      'by_subjects': 'by_subjects',
+      'all': 'all',
+      'projects/:id': 'display_proj'
+    };
+
+    App.prototype.initialize = function() {
+      return this.gallery = new GalleryView;
+    };
+
+    App.prototype.clickItem = function(item_id) {
+      return this.gallery.$el.find("[data-id='" + item_id + "']").click();
+    };
+
+    App.prototype.display_proj = function(proj_id) {
+      return this.gallery.on('render', (function(_this) {
+        return function() {
+          return _this.clickItem(proj_id);
+        };
+      })(this));
+    };
+
+    App.prototype.by_years = function() {
+      return this.filter('.show-by-years');
+    };
+
+    App.prototype.by_subjects = function() {
+      return this.filter('.show-by-subjects');
+    };
+
+    App.prototype.all = function() {
+      return this.filter('.show-all');
+    };
+
+    App.prototype.filter = function(query) {
+      if (!_.isEmpty(this.gallery.collection.models)) {
+        return this.gallery.$el.find(query).trigger('click');
+      }
+      return $(document).ajaxSuccess((function(_this) {
+        return function() {
+          return _this.gallery.$el.find(query).trigger('click');
+        };
+      })(this));
+    };
+
+    return App;
+
+  })(Backbone.Router);
+  app = app || {};
+  app.pfolio = new App;
+  Backbone.history.start();
   blueimp.Gallery.prototype.applicationFactory = function(obj, callback) {
     var $element;
     $element = $('<div>').addClass('application-content');
@@ -219,22 +289,38 @@ jQuery(function() {
   $(document).on('click', '#gallery a.gallery-item', function(e) {
     var links, options;
     options = {
-      index: this,
+      index: $(this).index(),
       event: e,
+      preloadRange: 1,
       onslide: function(index, slide) {
-        var node, text;
-        text = $(this.list[index]).data('description');
+        var $link, id, node, text;
+        $link = $(this.list[index]);
+        id = $link.data('id');
+        Backbone.history.navigate("projects/" + id);
+        this.slidesContainer;
+        text = $link.data('description');
         node = this.container.find('.description');
         node.empty();
         $(node).append('<h5>').find(':first-child').append(text);
+        $(node).append('<div id="vk_like">');
+        VK.Widgets.Like("vk_like", {
+          type: 'vertical',
+          pageUrl: window.location.href
+        });
         return slide;
       }
     };
     links = $(this).parent().find('a');
     return blueimp.Gallery(links, options);
   });
-  return $('nav a').click(function(e) {
+  $('nav a').click(function(e) {
     $('nav a').removeClass('active button-primary');
     return $(this).addClass('active button-primary');
+  });
+  return VK.init({
+    apiId: 3568852,
+    onlyWidgets: true,
+    pageImage: '../img/adobe_flash.png',
+    text: 'Интересные работы'
   });
 });

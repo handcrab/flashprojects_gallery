@@ -2,6 +2,9 @@
   width: 100px;
   height: 100px; }
 
+.blueimp-gallery {
+  z-index: 999 !important; }
+
 .blueimp-gallery > .description {
   position: absolute;
   top: 30px;
