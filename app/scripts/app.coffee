@@ -94,6 +94,7 @@ jQuery ->
         $(@el).find('.content').append item_view.render().el
 
     showByYears: ->
+      # @collection.fetch unless @collection.models
       $content = @clearContent()
 
       for year in @collection.getYears()
@@ -102,7 +103,8 @@ jQuery ->
         """
         itemsByYear = @collection.where dateYear: year
         @renderItems itemsByYear
-    
+
+    # showByYears
     showBySubjects: ->
       $content = @clearContent()
 
@@ -118,7 +120,37 @@ jQuery ->
       'click .show-by-subjects': 'showBySubjects'
       'click .show-all': 'renderItems'
 
-  pfolio = new GalleryView
+  class App extends Backbone.Router
+    routes:
+      'by_years': 'by_years'
+      'by_subjects': 'by_subjects'
+      'all': 'all'
+
+    initialize: ->
+      @gallery = new GalleryView
+      #     this.view = new MovieAppView({ model: this.model });
+      #     params.append_at.append(this.view.render().el);
+      # },
+
+    search: (query, page) ->
+
+    by_years: -> @filter '.show-by-years'
+    by_subjects: -> @filter '.show-by-subjects'
+    all: -> @filter '.show-all'
+
+    filter: (query) ->
+      unless _.isEmpty @gallery.collection.models
+        return @gallery.$el.find(query).trigger('click')
+      # console.log 'loading' unless @gallery.collection.models
+      # @gallery.collection.on 'success', ->
+      $(document).ajaxSuccess =>
+        @gallery.$el.find(query).trigger('click')
+        # @gallery.showByYears()
+        # @gallery.$el.trigger 'click .show-by-years'
+
+  app = app or {}
+  app.pfolio = new App
+  Backbone.history.start()
 
   # ---------------
   # blueImp gallery
