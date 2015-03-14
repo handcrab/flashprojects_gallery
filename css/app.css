@@ -4,15 +4,18 @@
 
 .blueimp-gallery {
   z-index: 999 !important; }
+  .blueimp-gallery > .description, .blueimp-gallery > .social-widgets {
+    position: absolute;
+    left: 15px; }
+  .blueimp-gallery > .description {
+    top: 30px;
+    color: white;
+    font-size: 24px; }
+  .blueimp-gallery > .social-widgets {
+    position: absolute;
+    bottom: 30px; }
 
-.blueimp-gallery > .description {
-  position: absolute;
-  top: 30px;
-  left: 15px;
-  color: white;
-  font-size: 24px; }
-
-.blueimp-gallery-controls > .description {
+.blueimp-gallery-controls > .description, .blueimp-gallery-controls > .social-widgets {
   display: block; }
 
 .application-content {

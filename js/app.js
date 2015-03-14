@@ -297,16 +297,17 @@ jQuery(function() {
         $link = $(this.list[index]);
         id = $link.data('id');
         Backbone.history.navigate("projects/" + id);
-        this.slidesContainer;
         text = $link.data('description');
         node = this.container.find('.description');
         node.empty();
         $(node).append('<h5>').find(':first-child').append(text);
+        node = this.container.find('.social-widgets');
+        node.empty();
         $(node).append('<div id="vk_like">');
         VK.Widgets.Like("vk_like", {
-          type: 'vertical',
+          type: 'mini',
           pageUrl: window.location.href,
-          pageImage: 'http://handcrab.github.io/flashprojects_gallery/img/adobe_flash.png',
+          pageImage: '../img/adobe_flash.png',
           text: 'Интересные работы'
         });
         return slide;
@@ -321,6 +322,6 @@ jQuery(function() {
   });
   return VK.init({
     apiId: 3568852,
-    onlyWidgets: true,
+    onlyWidgets: true
   });
 });
