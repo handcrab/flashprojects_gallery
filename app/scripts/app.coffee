@@ -192,6 +192,7 @@ jQuery ->
     options =
       index: $(@).index()
       event: e
+      preloadRange: 1
       # enableKeyboardNavigation: false
       # fullScreen: true
       onslide: (index, slide) ->
@@ -221,5 +222,7 @@ jQuery ->
     $(@).addClass 'active button-primary'
 
   VK.init
-    apiId: 3568852
-    onlyWidgets: true
+    apiId       : 3568852
+    onlyWidgets : true
+    pageImage   : '../img/adobe_flash.png'
+    text        : 'Интересные работы'
