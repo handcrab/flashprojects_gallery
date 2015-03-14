@@ -200,17 +200,21 @@ jQuery ->
         id = $link.data('id')
         Backbone.history.navigate "projects/#{id}" # set url
 
-        @slidesContainer
+        # @slidesContainer
         text = $link.data('description')
         node = @container.find '.description'
         node.empty()
         $(node).append('<h5>').find(':first-child').append text
+
+        node = @container.find '.social-widgets'
+        node.empty()
         $(node).append('<div id="vk_like">')
 
         VK.Widgets.Like "vk_like",
-          type    : 'vertical'
-          pageUrl : window.location.href
-
+          type      : 'mini'
+          pageUrl   : window.location.href
+          pageImage : '../img/adobe_flash.png'
+          text      : 'Интересные работы'
         slide
     links = $(@).parent().find('a')
     blueimp.Gallery links, options
@@ -224,5 +228,3 @@ jQuery ->
   VK.init
     apiId       : 3568852
     onlyWidgets : true
-    pageImage   : '../img/adobe_flash.png'
-    text        : 'Интересные работы'
