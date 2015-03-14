@@ -305,7 +305,9 @@ jQuery(function() {
         $(node).append('<div id="vk_like">');
         VK.Widgets.Like("vk_like", {
           type: 'vertical',
-          pageUrl: window.location.href
+          pageUrl: window.location.href,
+          pageImage: 'http://handcrab.github.io/flashprojects_gallery/img/adobe_flash.png',
+          text: 'Интересные работы'
         });
         return slide;
       }
@@ -320,7 +322,5 @@ jQuery(function() {
   return VK.init({
     apiId: 3568852,
     onlyWidgets: true,
-    pageImage: '../img/adobe_flash.png',
-    text: 'Интересные работы'
   });
 });
