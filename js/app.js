@@ -303,7 +303,7 @@ jQuery(function() {
         $(node).append('<h5>').find(':first-child').append(text);
         $(node).append('<div id="vk_like">');
         VK.Widgets.Like("vk_like", {
-          type: 'vertical',
+          type: 'mini',
           pageUrl: window.location.href
         });
         return slide;
