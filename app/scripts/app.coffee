@@ -9,7 +9,10 @@ jQuery ->
   #   "subject": "foobar",
   #   "description": "lorem ipsum"
   class GalleryItem extends Backbone.Model
-    # defaults: ->
+    @id_count: 0
+    initialize: ->
+      @id = (GalleryItem.id_count += 1)
+
     dateYear: ->
       dateRegexp = /(\d{2}).(\d{2}).(\d{4})/i
       date = @get('date').toString()
@@ -54,9 +57,11 @@ jQuery ->
       # title: "#{ @model.get 'author' }@#{ @model.get 'date' }: #{ @model.get 'description' }"
       href: "#{ @model.get 'href' }"
       type: "application/x-shockwave-flash" if @model.get('href').match(/swf$/i)
-      'data-description': "#{ @model.get 'author' }@#{ @model.get 'date' }: #{ @model.get 'description' }"
+      'data-description': @descriptionStr()
+      'data-id': @model.id # @model.cid
 
-    # initialize: ->
+    descriptionStr: ->
+      "#{@model.get 'author'}@#{@model.get 'date'}: #{@model.get 'description'}"
 
     render: ->
       $(@el).html """
@@ -81,6 +86,7 @@ jQuery ->
           $(@el).find('.content').empty()
           $(@el).find('.content').css background: 'none' # disable spinner
           @renderItems items.models
+          @trigger 'render'
         # @
 
     clearContent: -> $(@el).find('.content').empty()
@@ -116,23 +122,28 @@ jQuery ->
         @renderItems itemsBySubject
 
     events:
-      'click .show-by-years': 'showByYears'
-      'click .show-by-subjects': 'showBySubjects'
-      'click .show-all': 'renderItems'
+      'click .show-by-years'    : 'showByYears'
+      'click .show-by-subjects' : 'showBySubjects'
+      'click .show-all'         : 'renderItems'
 
+  # ROUTER
+  # ======
   class App extends Backbone.Router
     routes:
-      'by_years': 'by_years'
-      'by_subjects': 'by_subjects'
-      'all': 'all'
+      'by_years'    : 'by_years'
+      'by_subjects' : 'by_subjects'
+      'all'         : 'all'
+      'projects/:id': 'display_proj'
 
-    initialize: ->
-      @gallery = new GalleryView
-      #     this.view = new MovieAppView({ model: this.model });
-      #     params.append_at.append(this.view.render().el);
-      # },
+    initialize: ->  @gallery = new GalleryView
 
-    search: (query, page) ->
+    clickItem: (item_id) ->
+      # $("#gallery .gallery-item[data-id='#{item_id}']").click()
+      @gallery.$el.find("[data-id='#{item_id}']").click()
+    display_proj: (proj_id) ->
+      @gallery.on 'render', =>
+        @clickItem(proj_id)
+        # setTimeout @clickItem(proj_id), 0
 
     by_years: -> @filter '.show-by-years'
     by_subjects: -> @filter '.show-by-subjects'
@@ -141,11 +152,9 @@ jQuery ->
     filter: (query) ->
       unless _.isEmpty @gallery.collection.models
         return @gallery.$el.find(query).trigger('click')
-      # console.log 'loading' unless @gallery.collection.models
       # @gallery.collection.on 'success', ->
       $(document).ajaxSuccess =>
         @gallery.$el.find(query).trigger('click')
-        # @gallery.showByYears()
         # @gallery.$el.trigger 'click .show-by-years'
 
   app = app or {}
@@ -181,12 +190,17 @@ jQuery ->
 
   $(document).on 'click', '#gallery a.gallery-item', (e) ->
     options =
-      index: @
+      index: $(@).index()
       event: e
       # enableKeyboardNavigation: false
       # fullScreen: true
       onslide: (index, slide) ->
-        text = $(@list[index]).data('description')
+        $link = $(@list[index])
+        id = $link.data('id')
+        Backbone.history.navigate "projects/#{id}" # set url
+
+        @slidesContainer
+        text = $link.data('description')
         node = @container.find '.description'
         node.empty()
         $(node).append('<h5>').find(':first-child').append text
