@@ -309,7 +309,7 @@ jQuery(function() {
           pageUrl: window.location.href,
           pageImage: '../img/adobe_flash.png',
           text: 'Интересные работы',
-          page_id: window.location.href
+          page_id: window.location.href.hashCode()
         });
         console.log(window.location.href.hashCode());
         return slide;
