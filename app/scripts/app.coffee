@@ -210,11 +210,12 @@ jQuery ->
         node.empty()
         $(node).append('<div id="vk_like">')
 
-        VK.Widgets.Like "vk_like",
+        VK.Widgets.Like "vk_like",{
           type      : 'mini'
           pageUrl   : window.location.href
           pageImage : '../img/adobe_flash.png'
           text      : 'Интересные работы'
+        }, window.location.href.hashCode() # page_id
         slide
     links = $(@).parent().find('a')
     blueimp.Gallery links, options
@@ -228,3 +229,14 @@ jQuery ->
   VK.init
     apiId       : 3568852
     onlyWidgets : true
+
+
+String::hashCode = ->
+  hash = 0
+  return hash if @length is 0
+
+  for i in [0...@length]
+    chr   = @charCodeAt(i)
+    hash  = ((hash << 5) - hash) + chr
+    hash |= 0 # Convert to 32bit integer
+  hash
