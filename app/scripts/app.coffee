@@ -133,7 +133,7 @@ jQuery ->
       'by_years'    : 'by_years'
       'by_subjects' : 'by_subjects'
       'all'         : 'all'
-      'projects/:id': 'display_proj'
+      'flashprojects_gallery/projects/:id': 'display_proj'
 
     initialize: ->  @gallery = new GalleryView
 
@@ -160,6 +160,7 @@ jQuery ->
   app = app or {}
   app.pfolio = new App
   Backbone.history.start()
+  # Backbone.history.start pushState: true, root: '/flashprojects_gallery'
 
   # ---------------
   # blueImp gallery
@@ -215,6 +216,8 @@ jQuery ->
           pageUrl   : window.location.href
           pageImage : '../img/adobe_flash.png'
           text      : 'Интересные работы'
+          page_id   : window.location.href
+        console.log window.location.href.hashCode()
         slide
     links = $(@).parent().find('a')
     blueimp.Gallery links, options
@@ -229,3 +232,13 @@ jQuery ->
   VK.init
     apiId       : 3568852
     onlyWidgets : true
+
+String::hashCode = ->
+  hash = 0
+  return hash if @length is 0
+
+  for i in [0...@length]
+    chr   = @charCodeAt(i)
+    hash  = ((hash << 5) - hash) + chr
+    hash |= 0 # Convert to 32bit integer
+  hash

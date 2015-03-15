@@ -50,10 +50,10 @@ jQuery(function() {
         items = this.models;
       }
       return _((function() {
-        var i, len, results;
+        var j, len, results;
         results = [];
-        for (i = 0, len = items.length; i < len; i++) {
-          item = items[i];
+        for (j = 0, len = items.length; j < len; j++) {
+          item = items[j];
           results.push(item.get('dateYear'));
         }
         return results;
@@ -68,10 +68,10 @@ jQuery(function() {
         items = this.models;
       }
       return _((function() {
-        var i, len, results;
+        var j, len, results;
         results = [];
-        for (i = 0, len = items.length; i < len; i++) {
-          item = items[i];
+        for (j = 0, len = items.length; j < len; j++) {
+          item = items[j];
           results.push(item.get('subject'));
         }
         return results;
@@ -147,14 +147,14 @@ jQuery(function() {
     };
 
     GalleryView.prototype.renderItems = function(items) {
-      var i, item, item_view, len, results;
+      var item, item_view, j, len, results;
       if (items.target) {
         this.clearContent();
         items = this.collection.models;
       }
       results = [];
-      for (i = 0, len = items.length; i < len; i++) {
-        item = items[i];
+      for (j = 0, len = items.length; j < len; j++) {
+        item = items[j];
         item_view = new GalleryItemView({
           model: item
         });
@@ -164,12 +164,12 @@ jQuery(function() {
     };
 
     GalleryView.prototype.showByYears = function() {
-      var $content, i, itemsByYear, len, ref, results, year;
+      var $content, itemsByYear, j, len, ref, results, year;
       $content = this.clearContent();
       ref = this.collection.getYears();
       results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        year = ref[i];
+      for (j = 0, len = ref.length; j < len; j++) {
+        year = ref[j];
         $content.append("<h2>Год: " + year + "</h2>");
         itemsByYear = this.collection.where({
           dateYear: year
@@ -180,12 +180,12 @@ jQuery(function() {
     };
 
     GalleryView.prototype.showBySubjects = function() {
-      var $content, i, itemsBySubject, len, ref, results, subject;
+      var $content, itemsBySubject, j, len, ref, results, subject;
       $content = this.clearContent();
       ref = this.collection.getSubjects();
       results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        subject = ref[i];
+      for (j = 0, len = ref.length; j < len; j++) {
+        subject = ref[j];
         $content.append("<h2>Тема: " + subject + "</h2>");
         itemsBySubject = this.collection.where({
           subject: subject
@@ -215,7 +215,7 @@ jQuery(function() {
       'by_years': 'by_years',
       'by_subjects': 'by_subjects',
       'all': 'all',
-      'projects/:id': 'display_proj'
+      'flashprojects_gallery/projects/:id': 'display_proj'
     };
 
     App.prototype.initialize = function() {
@@ -308,8 +308,10 @@ jQuery(function() {
           type: 'mini',
           pageUrl: window.location.href,
           pageImage: '../img/adobe_flash.png',
-          text: 'Интересные работы'
+          text: 'Интересные работы',
+          page_id: window.location.href
         });
+        console.log(window.location.href.hashCode());
         return slide;
       }
     };
@@ -325,3 +327,17 @@ jQuery(function() {
     onlyWidgets: true
   });
 });
+
+String.prototype.hashCode = function() {
+  var chr, hash, i, j, ref;
+  hash = 0;
+  if (this.length === 0) {
+    return hash;
+  }
+  for (i = j = 0, ref = this.length; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+    chr = this.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+  return hash;
+};
