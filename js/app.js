@@ -42,7 +42,7 @@ jQuery(function() {
 
     Gallery.prototype.model = GalleryItem;
 
-    Gallery.prototype.url = 'https://www.dropbox.com/s/yi5bgmqmnl19o33/files.json';
+    Gallery.prototype.url = 'https://dl.dropboxusercontent.com/s/yi5bgmqmnl19o33/files.json';
 
     Gallery.prototype.getYears = function(items) {
       var item;
